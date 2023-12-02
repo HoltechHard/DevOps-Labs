@@ -1,0 +1,53 @@
+=================================================
+|       USING SERVICES FOR LOAD-BALANCING       |
+=================================================
+
+1) create service using manifest file service.yaml
+
+$ kubectl apply -f service.yaml
+
+service/nginx-service created
+
+2) check the existing services 
+
+$ kubectl get svc
+
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+kubernetes      ClusterIP   10.96.0.1       <none>        443/TCP   25h
+nginx-service   ClusterIP   10.96.141.242   <none>        80/TCP    10s
+
+*** service have cluster IP inside of network of kubernetes
+
+3) access to web page taking in account load-balancing in our pods
+
+$ kubectl port-forward svc/nginx-service 8080:80
+
+Forwarding from 127.0.0.1:8080 -> 80
+Forwarding from [::1]:8080 -> 80
+Handling connection for 8080
+
+*** using service, we have load-balancing. 
+    in each time when i run the service, a different pod is running the app
+
+4) to run the app in internet without use port-forward and the internal network 
+    of kubernetes, we can do this using the manifest file deployementv2.yaml
+    Here we change the type of service to LoadBalancer
+
+$ kubectl apply -f servicev2.yaml
+
+service/nginx-service configured
+
+$ kubectl get svc
+
+NAME            TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+kubernetes      ClusterIP      10.96.0.1       <none>        443/TCP        25h
+nginx-service   LoadBalancer   10.96.141.242   <pending>     80:32165/TCP   14m
+
+*** with this configuration, a cloud provider will give us a EXTERNAL-IP to access
+    service to my app running:
+        - with kubernetes
+        - with load-balancing
+        - with PODs managing
+        - with control-version of app
+        - with high disponibility and scalability
+

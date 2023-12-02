@@ -85,3 +85,6 @@ nginx-deployment-7549b7fdd6-z8frh   1/1     Running   0          101s
 
 $ kubectl port-forward pod/nginx-deployment-7549b7fdd6-l2xjf 8080:80
 
+$ kubectl port-forward pod/nginx-deployment-7549b7fdd6-ns54s 8080:80
+
+*** here we can see the main web page of our application
