@@ -1,0 +1,69 @@
+=========================================================
+|      DEPLOY APP WITH REPLICAS, CONTAINERS AND PODS    |
+=========================================================
+
+1) make modification of manifest file adding the image of our application
+    holtech/lab04_docker       
+
+2) apply the new manifest in our replicaset 
+
+$ kubectl apply -f replicasetv2.yaml
+
+replicaset.apps/nginx-replicaset configured
+
+3) check the available pods
+
+$ kubectl get pods
+
+NAME                     READY   STATUS    RESTARTS      AGE
+nginx-replicaset-5hlpn   1/1     Running   1 (17m ago)   16h
+nginx-replicaset-8rxq2   1/1     Running   1 (17m ago)   16h
+nginx-replicaset-8x6xl   1/1     Running   1 (17m ago)   16h
+nginx-replicaset-djbrg   1/1     Running   1 (17m ago)   16h
+nginx-replicaset-h6wms   1/1     Running   1 (17m ago)   16h
+
+4) to take the application with image holtech/lab04_docker, we need 
+    choose some specific pod and delete 
+
+$ kubectl delete pod nginx-replicaset-h6wms
+
+pod "nginx-replicaset-h6wms" deleted
+
+5) check the new created pod
+
+$ kubectl get pods
+
+NAME                     READY   STATUS    RESTARTS      AGE
+nginx-replicaset-5hlpn   1/1     Running   1 (20m ago)   16h
+nginx-replicaset-8rxq2   1/1     Running   1 (20m ago)   16h
+nginx-replicaset-8x6xl   1/1     Running   1 (20m ago)   16h
+nginx-replicaset-djbrg   1/1     Running   1 (20m ago)   16h
+nginx-replicaset-nn4sr   1/1     Running   0             97s
+
+*** we can check here, that we run command to delete pod, but the 
+    replicaset automatically create a new pod to mantain the 5 
+    replicas defined in the manifest file
+
+6) access to nginx of the most recently created pod, to check the app
+
+$ kubectl port-forward pod/nginx-replicaset-nn4sr 8080:80
+
+Forwarding from 127.0.0.1:8080 -> 80
+Forwarding from [::1]:8080 -> 80
+Handling connection for 8080
+
+7) after that, access to localhost:8080 and check the web page of image 
+    holtech/lab04_docker
+
+*** here we see the Main web page of my app
+
+8) if you access to another pod, we will see that the changes just succeed 
+    in the new pod. In older pods, the older version mantains 
+
+$ kubectl port-forward pod/nginx-replicaset-5hlpn 8080:80    
+
+*** here we just see the main page of nginx
+
+9) in conclusion the updatings in my app we will just take effect in my 
+    new created pods
+

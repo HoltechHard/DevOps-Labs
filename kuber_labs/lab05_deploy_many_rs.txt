@@ -1,0 +1,87 @@
+=================================================
+|       DEPLOYMENT WITH MANY REPLICA-SETS       |
+=================================================
+
+1) we will have 2 versions of app
+    - version 1: holtech/lab04_docker
+    - version 2: nginx:latest
+
+2) using deployment we will have 2 different replicas
+    the 2nd replica will contain nginx image 
+
+$ kubectl apply -f deployementv2.yaml
+
+deployment.apps/nginx-deployment configured
+
+3) check the created deployment, rs and pods
+
+$ kubectl get deployment
+
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment   5/5     5            5           175m
+
+$ kubectl get rs
+
+NAME                          DESIRED   CURRENT   READY   AGE 
+nginx-deployment-7549b7fdd6   0         0         0       176m
+nginx-deployment-79454f954f   5         5         5       84s 
+
+*** here, we have 2 replicasets, the older was dropped and the new pods 
+    was created by new replicaset
+
+$ kubectl get pods 
+
+NAME                                READY   STATUS    RESTARTS   AGE  
+nginx-deployment-79454f954f-5zn9w   1/1     Running   0          2m28s
+nginx-deployment-79454f954f-6mgqc   1/1     Running   0          2m28s
+nginx-deployment-79454f954f-9j29j   1/1     Running   0          2m24s
+nginx-deployment-79454f954f-qblq8   1/1     Running   0          2m22s
+nginx-deployment-79454f954f-tds5c   1/1     Running   0          2m28s
+
+*** check that new pods was created automatically by the new replicaset 
+
+4) choose randomly a pod and run application
+
+$ kubectl port-forward pod/nginx-deployment-79454f954f-9j29j 8080:80
+
+Forwarding from 127.0.0.1:8080 -> 80
+Forwarding from [::1]:8080 -> 80
+Handling connection for 8080
+
+$ kubectl port-forward pod/nginx-deployment-79454f954f-qblq8
+
+*** we will see the main page of nginx
+
+5) return to the 1st version of deployment
+
+$ kubectl apply -f deployment.yaml
+
+deployment.apps/nginx-deployment configured
+
+6) check the delete of 2nd replicaset and returning to 1st replicaset
+
+$ kubectl get rs
+
+NAME                          DESIRED   CURRENT   READY   AGE
+nginx-deployment-7549b7fdd6   5         5         3       3h5m
+nginx-deployment-79454f954f   1         1         1       10m
+
+waiting...
+
+NAME                          DESIRED   CURRENT   READY   AGE
+nginx-deployment-7549b7fdd6   5         5         5       3h5m
+nginx-deployment-79454f954f   0         0         0       10m
+
+$ kubectl get pods
+
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-7549b7fdd6-dxxv8   1/1     Running   0          105s
+nginx-deployment-7549b7fdd6-kfdph   1/1     Running   0          106s
+nginx-deployment-7549b7fdd6-l2xjf   1/1     Running   0          105s
+nginx-deployment-7549b7fdd6-ns54s   1/1     Running   0          102s
+nginx-deployment-7549b7fdd6-z8frh   1/1     Running   0          101s
+
+7) access randomly to some specific pod and run application 
+
+$ kubectl port-forward pod/nginx-deployment-7549b7fdd6-l2xjf 8080:80
+

@@ -1,0 +1,63 @@
+=====================================================
+|           DEPLOYEMENT LAYER IN KUBERNETES         |
+=====================================================
+
+1) to make changes in my manifest document and view the effects of 
+    changes in the all pods, it's necessary create a new layer 
+    called deployment. For that we will use deployment.yaml 
+
+2) check the currently replicaset 
+
+$ kubectl get rs
+
+NAME               DESIRED   CURRENT   READY   AGE
+nginx-replicaset   5         5         5       17h
+
+3) delete the current replicaset
+
+$ kubectl delete rs nginx-replicaset
+
+replicaset.apps "nginx-replicaset" deleted
+
+$ kubectl get pods
+
+No resources found in default namespace.
+
+4) create deployment using manifest
+
+$ kubectl apply -f deployment.yaml
+
+deployment.apps/nginx-deployment created
+
+5) check the deployment, replicaset and pods created
+
+$ kubectl get deployment
+
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment   5/5     5            5           90s
+
+$ kubectl get rs
+
+NAME                          DESIRED   CURRENT   READY   AGE
+nginx-deployment-7549b7fdd6   5         5         5       111s
+
+$ kubectl get pods
+
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-7549b7fdd6-4fk6q   1/1     Running   0          2m16s
+nginx-deployment-7549b7fdd6-5wlj7   1/1     Running   0          2m16s
+nginx-deployment-7549b7fdd6-ncbsv   1/1     Running   0          2m16s
+nginx-deployment-7549b7fdd6-pg872   1/1     Running   0          2m16s
+nginx-deployment-7549b7fdd6-vrlcn   1/1     Running   0          2m16s
+
+6) choose randomly a pod and access to application holtech/lab04_docker
+
+$ kubectl port-forward pod/nginx-deployment-7549b7fdd6-pg872 8080:80
+
+$ kubectl port-forward pod/nginx-deployment-7549b7fdd6-4fk6q 8080:80
+
+Forwarding from 127.0.0.1:8080 -> 80
+Forwarding from [::1]:8080 -> 80
+Handling connection for 8080
+
+*** we will see the main page of our application 

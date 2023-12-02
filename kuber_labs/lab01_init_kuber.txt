@@ -1,0 +1,66 @@
+=====================================================
+|           INITIALIZATION WITH KUBERNETES          |
+=====================================================
+
+-- CREATION OF PODS
+
+1) install golang in official web site
+
+2) install kubernetes 
+
+$ go install sigs.k8s.io/kind@v0.20.0
+
+3) create a cluster 
+
+$ kind create cluster
+
+Creating cluster "kind" ...
+ • Ensuring node image (kindest/node:v1.27.3) 🖼  ...
+ ✓ Ensuring node image (kindest/node:v1.27.3) 🖼
+ • Preparing nodes 📦   ...
+ ✓ Preparing nodes 📦 
+ • Writing configuration 📜  ...
+ ✓ Writing configuration 📜
+ • Starting control-plane 🕹️  ...
+ ✓ Starting control-plane 🕹️
+ • Installing CNI 🔌  ...
+ ✓ Installing CNI 🔌
+ • Installing StorageClass 💾  ...
+ ✓ Installing StorageClass 💾
+Set kubectl context to "kind-kind"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-kind
+
+4) check information about cluster nodes 
+
+$ kubectl get nodes 
+
+NAME                 STATUS   ROLES           AGE    VERSION
+kind-control-plane   Ready    control-plane   5m1s   v1.27.3
+
+5) apply manifest pod.yaml file to create pod in my kubernetes environment
+
+$ kubectl apply -f pod.yaml
+
+pod/nginx created
+
+6) check what pods i have in kubernetes
+
+$ kubectl get pods
+
+NAME    READY   STATUS              RESTARTS   AGE  
+nginx   0/1     ContainerCreating   0          3m34s
+
+*** currently we have 1 container inside of 1 pod running in kubernetes
+
+7) delete 1 pod
+
+$ kubectl delete pod nginx
+
+pod "nginx" deleted
+
+$ kubectl get pods
+
+No resources found in default namespace.
+

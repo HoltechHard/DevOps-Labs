@@ -1,0 +1,87 @@
+============================================
+|       MANAGE OF POD'S REPLICAS           |
+============================================
+
+- CREATION OF REPLICA-SET
+
+1) creation of replicaset using manifest file
+
+$ kubectl apply -f replicaset.yaml
+
+replicaset.apps/nginx-replicaset created
+
+2) check the replicaset 
+
+$ kubectl get rs
+
+NAME               DESIRED   CURRENT   READY   AGE
+nginx-replicaset   1         1         1       40s
+
+3) check the pods which replicaset is managing
+
+$ kubectl get pods
+
+NAME                     READY   STATUS    RESTARTS   AGE  
+nginx-replicaset-27gd6   1/1     Running   0          2m24s
+
+
+-- MANAGE REPLICAS, PODS AND CONTAINERS
+
+4) eliminate the currently pod
+
+$ kubectl delete pod nginx-replicaset-27gd6
+
+pod "nginx-replicaset-27gd6" deleted
+
+5) check the existing pods
+
+$ kubectl get pods
+
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-replicaset-8x6xl   1/1     Running   0          24s
+
+*** here, is possible to see, that the 1st POD was eliminated, 
+    but replicaset automatically creates a new POD to supply 
+    the need of load the application in nginx in this new POD
+
+*** replicaset monitore the running PODs and create the necessary
+    PODs automatically
+
+6) managing 5 replicas
+
+$ kubectl apply -f replicaset.yaml
+
+replicaset.apps/nginx-replicaset configured
+
+7) check the replicas created by replicaset
+
+$ kubectl get rs
+
+NAME               DESIRED   CURRENT   READY   AGE
+nginx-replicaset   5         5         5       16m
+
+8) check the created pods
+
+$ kubectl get pods
+
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-replicaset-5hlpn   1/1     Running   0          87s
+nginx-replicaset-8rxq2   1/1     Running   0          87s
+nginx-replicaset-8x6xl   1/1     Running   0          10m
+nginx-replicaset-djbrg   1/1     Running   0          87s
+nginx-replicaset-h6wms   1/1     Running   0          87s
+
+*** each POD have 1 container running nginx 
+
+9) to access directly 1 container managed by 1 POD is necessary pointer
+    port 8080 of local computer  and redirect to port 80 of container
+
+$ kubectl port-forward pod/nginx-replicaset-h6wms 8080:80
+
+Forwarding from 127.0.0.1:8080 -> 80
+Forwarding from [::1]:8080 -> 80
+Handling connection for 8080
+Handling connection for 8080
+
+*** put localhost:8080 in browser and see the nginx main web page
+

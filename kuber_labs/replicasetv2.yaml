@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata: # this is the manager of replicas
+  name: nginx-replicaset
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: nginx
+  template: # this is the pod
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers: # this is the container
+      - name: nginx
+        image: holtech/lab04_docker # update with new image
+        ports:
+        - containerPort: 80

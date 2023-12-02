@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment # here is deployment
+spec:
+  replicas: 5 # number of replicas
+  selector:
+    matchLabels:
+      app: nginx # here is pod
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers: # here is container
+      - name: nginx
+        image: holtech/lab04_docker
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        ports:
+        - containerPort: 80

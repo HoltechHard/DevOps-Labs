@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    resources:
+      limits:
+        memory: "128Mi" # restrict memory use to 128 Mb as maximum
+        cpu: "200m" # restrict container to use 0.2 CPU core as maximum
+        # preventing it from monopolizing the available CPU on the node
+    ports:
+    - containerPort: 80
