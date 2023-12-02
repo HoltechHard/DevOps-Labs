@@ -1,0 +1,133 @@
+=========================================================
+|         RUN COMMANDS AGAINST DOCKER CONTAINERS        |
+=========================================================
+
+1) run container based in nginx image 
+
+$ docker run -p 8080:80 nginx
+
+2023/11/19 16:48:26 [notice] 1#1: start worker processes
+2023/11/19 16:48:26 [notice] 1#1: start worker process 29
+2023/11/19 16:48:26 [notice] 1#1: start worker process 30
+2023/11/19 16:48:26 [notice] 1#1: start worker process 31
+2023/11/19 16:48:26 [notice] 1#1: start worker process 32
+
+2) show the running processes in docker [containers]
+
+$ docker ps
+
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                  NAMES
+0889444548c6   nginx     "/docker-entrypoint.…"   7 seconds ago   Up 6 seconds   0.0.0.0:8080->80/tcp   objective_lovelace
+
+3) execute in container "objective_lovelace", the linux command ls
+
+$ docker exec objective_lovelace ls
+
+bin
+boot
+dev
+docker-entrypoint.d
+docker-entrypoint.sh
+etc
+home
+lib
+lib32
+lib64
+libx32
+media
+mnt
+opt
+proc
+root
+run
+sbin
+srv
+sys
+tmp
+usr
+var
+
+4) enter to container and run linux commands using bash in iterative form
+
+$ docker exec -it objective_lovelace bash
+
+root@0889444548c6:/# 
+
+5) move to html folder of nginx
+
+root@0889444548c6:/# cd /usr/share/nginx/html/
+
+6) acccess the file index.html for nginx and print this content
+
+root@0889444548c6:/usr/share/nginx/html# ls
+50x.html  index.html
+
+root@0889444548c6:/usr/share/nginx/html# cat index.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+
+7) drop the file index.html
+
+root@0889444548c6:/usr/share/nginx/html# rm -f index.html
+root@0889444548c6:/usr/share/nginx/html# ls
+50x.html
+
+8) create new html file with some text
+
+root@0889444548c6:/usr/share/nginx/html# echo "hello world" > index.html
+root@0889444548c6:/usr/share/nginx/html# ls
+50x.html  index.html
+
+9) check in localhost:8080, we have a new index with phrase "hello world"
+
+10) get out of container and stop the process. 
+    re-run the nginx image and check to the all modifications was disapeared because 
+    we don't used volume to store our changings in container
+
+you can check to already we have a completly new container
+
+$ docker ps
+
+CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS              PORTS                  NAMES
+15cbc5973bcc   nginx     "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:8080->80/tcp   goofy_swirles
+
+11) when some one access the currently html project folder in my local machine, the modifications 
+    will take effect in the adress of my html folder in my container 
+    for this succeed, it's important give:
+        - the port from local mahcine 
+        - the port from container
+        - use the command publish port (-p)
+        - the adress of project folder from local machine
+        - the adress of nginx html folder from container
+        - use the command volume (-v)
+
+$ docker run -p 8080:80 -v ${PWD}/html:/usr/share/nginx/html nginx
+
+2023/11/20 13:17:20 [notice] 1#1: start worker processes
+2023/11/20 13:17:20 [notice] 1#1: start worker process 29
+2023/11/20 13:17:20 [notice] 1#1: start worker process 30
+2023/11/20 13:17:20 [notice] 1#1: start worker process 31
+2023/11/20 13:17:20 [notice] 1#1: start worker process 32
+

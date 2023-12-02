@@ -1,0 +1,139 @@
+==============================================
+|			   RUN DOCKERFILE IMAGES	   		|
+==============================================
+
+1) press ctrl + k and search by welcome-to-docker
+
+2) choose the image, select the port and press run
+
+3) list images running in docker
+
+> docker ps 
+
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+4) list all images running and stopped in docker
+
+> docker ps -a
+
+CONTAINER ID   IMAGE                             COMMAND                  CREATED         STATUS                     PORTS     NAMES
+3bc58b13a238   hello-world                       "/hello"                 7 minutes ago   Exited (0) 7 minutes ago             strange_wiles
+7c9a155fcc0b   docker/welcome-to-docker:latest   "/docker-entrypoint.…"   19 hours ago    Exited (0) 17 hours ago              welcome-to-docker
+
+5) run docker in iterative form in image of ubuntu-OS and execute bash to navigate 
+   in terminal of commands of ubuntu
+
+> docker run -it ubuntu bash
+
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+aece8493d397: Pull complete
+Digest: sha256:2b7412e6465c3c7fc5bb21d3e6f1917c167358449fecac8176c6e496e5c1f05f
+Status: Downloaded newer image for ubuntu:latest
+root@72027926a807:/# 
+
+6) check name of my OS 
+
+root@72027926a807:/# uname -a
+
+Linux 72027926a807 5.10.16.3-microsoft-standard-WSL2 #1 SMP Fri Apr 2 22:23:49 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+
+7) check cpu process data of my internal linux
+
+root@72027926a807:/# cat /proc/cpuinfo
+
+this ubuntu behaves like OS, but it's just a container running using docker
+
+8) check the processes working
+
+root@72027926a807:/# top
+
+op - 14:04:25 up 48 min,  0 users,  load average: 0.00, 0.02, 0.02
+Tasks:   2 total,   1 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.2 us,  0.2 sy,  0.0 ni, 99.7 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :   6261.3 total,   4006.2 free,    833.0 used,   1422.1 buff/cache
+MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   5202.1 avail Mem
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                                                                                          
+    1 root      20   0    4620   3840   3272 S   0.0   0.1   0:00.04 bash
+   12 root      20   0    7276   3444   2920 R   0.0   0.1   0:00.00 top                                                                                                              
+
+9) openning a new tab, we can see the container of ubuntu running 
+
+> docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED          STATUS          PORTS     NAMES
+72027926a807   ubuntu    "bash"    12 minutes ago   Up 12 minutes             eloquent_bouman
+
+10) for exit from linux-OS, just press ctrl + D
+
+> docker ps 
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+11) run container of nginx
+
+> docker run nginx
+
+2023/10/15 14:20:59 [notice] 1#1: using the "epoll" event method
+2023/10/15 14:20:59 [notice] 1#1: nginx/1.25.2
+2023/10/15 14:20:59 [notice] 1#1: built by gcc 12.2.0 (Debian 12.2.0-14)
+2023/10/15 14:20:59 [notice] 1#1: OS: Linux 5.10.16.3-microsoft-standard-WSL2
+2023/10/15 14:20:59 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2023/10/15 14:20:59 [notice] 1#1: start worker processes
+2023/10/15 14:20:59 [notice] 1#1: start worker process 30
+2023/10/15 14:20:59 [notice] 1#1: start worker process 31
+2023/10/15 14:20:59 [notice] 1#1: start worker process 32
+2023/10/15 14:20:59 [notice] 1#1: start worker process 33
+
+12) check the running process 
+
+> docker ps
+
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS     NAMES
+29a3333a71f0   nginx     "/docker-entrypoint.…"   3 minutes ago   Up 3 minutes   80/tcp    elastic_northcutt
+
+13) kill the container with ctrl + c
+
+14) when access port 8080 of my computer, publish and redirect to the port 80 of my container and run nginx
+
+> docker run -p 8080:80 nginx
+
+15) check the docker process running 
+
+> docker ps
+
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                  NAMES       
+bb6f297eb9a0   nginx     "/docker-entrypoint.…"   58 seconds ago   Up 57 seconds   0.0.0.0:8080->80/tcp   cool_almeida
+
+we can check here the localhost in port 8080 redirect to port 80 of container and running the image of nginx
+
+16) in browser of computer, run locahost:8080
+
+
+-- download project caption_ai in my own docker container
+
+$ docker pull wsyconan/caption_ai:v0.1
+
+v0.1: Pulling from wsyconan/caption_ai
+b04fae59f135: Pulling fs layer
+24cef00b9ad9: Pulling fs layer
+b04fae59f135: Pull complete
+24cef00b9ad9: Pull complete
+1db91b65282b: Pull complete
+54db3e52d959: Pull complete
+4d727a249b44: Pull complete
+e2928fa4d8dd: Pull complete 
+a577fd530f77: Pull complete
+43c7134659fc: Pull complete
+3574cf8c5457: Pull complete
+dc40c1468abd: Pull complete
+b52094faaaa3: Pull complete
+Digest: sha256:e5e79228ec66e515d3c6a1eea2921889218198335344e9b86b2636811dc11bb9
+Status: Downloaded newer image for wsyconan/caption_ai:v0.1
+docker.io/wsyconan/caption_ai:v0.1
+
+
+-- run project caption_ai
+
+$ docker run wsyconan/caption_ai
+
+

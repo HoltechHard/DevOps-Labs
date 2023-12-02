@@ -1,0 +1,40 @@
+=====================================================
+|			INITIALIZATION WITH DOCKER				|
+=====================================================
+
+EXAMPLE 01
+----------
+
+In this 1st example, we will get code of some simple application in github
+and donwload in docker container using git. After that, we will run the app
+
+1) positionate in files exec tag and inside of docker need to update apk
+
+/ # apk update
+
+2) install git 
+
+/ # apk add git
+
+3) clone the repository at github
+
+/ # git clone https://github.com/docker/welcome-to-docker
+
+4) positionate in welcome-to-docker project
+
+/ # cd welcome-to-docker
+
+/welcome-to-docker #  
+
+5) in the tag files, you can see the folder of welcome-to-docker
+
+6) build your first image
+
+> docker build -t welcome-to-docker .
+
+7) view the frontend web page using the 8080:80 tunnel
+
+
+# docker run -d -p 8080:80 --name welcome-to-docker docker/welcome-to-docker
+
+

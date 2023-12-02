@@ -1,0 +1,129 @@
+==============================================
+|          CREATE OWN DOCKER IMAGES          |
+==============================================
+
+1) create the Dockerfile and write the next code: 
+
+FROM nginx:latest
+
+COPY html/index.html /usr/share/nginx/html/
+
+2) build my personel container 
+
+$ docker build -t holtech/lab04_docker:latest .
+
+*** is possible to see this image in list of images in Docker Desktop
+
+[+] Building 0.5s (7/7) FINISHED                                                                                      docker:default
+ => [internal] load build definition from Dockerfile                                                                            0.0s
+ => => transferring dockerfile: 101B                                                                                            0.0s
+ => [internal] load .dockerignore                                                                                               0.0s
+ => => transferring context: 2B                                                                                                 0.0s
+ => [internal] load metadata for docker.io/library/nginx:latest                                                                 0.0s
+ => [internal] load build context                                                                                               0.0s
+ => => transferring context: 531B                                                                                               0.0s
+ => CACHED [1/2] FROM docker.io/library/nginx:latest                                                                            0.0s
+ => [2/2] COPY html/index.html /usr/share/nginx/html/                                                                           0.0s
+ => exporting to image                                                                                                          0.1s
+ => => exporting layers                                                                                                         0.0s
+ => => writing image sha256:bc4390da3f2f4c144f0657bccf417cbb75e7ffd6989fed034d6cc581035ee2b4                                    0.0s
+ => => naming to docker.io/holtech/lab04_docker:latest                                                                          0.0s
+
+3) run our image and check in localhost:8080 the web page
+
+$ docker run -p 8080:80 holtech/lab04_docker:latest
+
+2023/11/20 13:30:44 [notice] 1#1: start worker processes
+2023/11/20 13:30:44 [notice] 1#1: start worker process 29
+2023/11/20 13:30:44 [notice] 1#1: start worker process 30
+2023/11/20 13:30:44 [notice] 1#1: start worker process 31
+2023/11/20 13:30:44 [notice] 1#1: start worker process 32
+
+4) check the docker containers
+
+$ docker ps
+
+CONTAINER ID   IMAGE                         COMMAND                  CREATED          STATUS          PORTS                  NAMES
+21892bbfce01   holtech/lab04_docker:latest   "/docker-entrypoint.…"   41 seconds ago   Up 40 seconds   0.0.0.0:8080->80/tcp   condescending_nash
+
+5) make available holtech/lab04_docker image in docker hub
+
+$ docker push holtech/lab04_docker:latest
+
+The push refers to repository [docker.io/holtech/lab04_docker]
+35d57db9c5aa: Pushed
+3c7f79e64c24: Pushed
+ff24e13e73c7: Pushed
+b0b61abb5846: Pushed
+2187753852c0: Pushed
+ad5d551c7fa1: Pushed
+e53d016bbab1: Pushed
+cb4596cc1454: Pushed
+latest: digest: sha256:051dd21e45b5f4d371ae7136bd565b8a07aa7dfe5676e09248b3a07702101371 size: 1985
+
+
+-- CREATE CONTAINER USING DATABASE
+
+6) use manifest file to run container with mysql
+
+$ docker compose up
+
+[+] Building 0.0s (0/0)                                                                                                                   docker:default
+[+] Running 1/1
+ ✔ Container mysql  Recreated                                                                                                                       0.2s 
+Attaching to mysql
+mysql  | 2023-11-20 17:03:15+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.2.0-1.el8 started.
+mysql  | 2023-11-20 17:03:16+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+
+7) define volume in mysql container and run container in background 
+
+$ docker compose up -d
+ 
+[+] Building 0.0s (0/0)                                                                                                                   docker:default
+[+] Running 1/1
+ ✔ Container mysql  Started 
+
+8) kill the container
+
+$ docker compose down
+
+[+] Running 2/2
+ ✔ Container mysql              Removed                                                                                                             1.3s 
+ ✔ Network docker_labs_default  Removed
+
+9) introduce the part of nginx server in docker-compose (myapp) and run container
+
+$ docker compose up -d
+
+[+] Building 0.5s (7/7) FINISHED                                                                                                          docker:default
+ => [myapp internal] load build definition from Dockerfile                                                                                          0.1s
+ => => transferring dockerfile: 101B                                                                                                                0.0s 
+ => [myapp internal] load .dockerignore                                                                                                             0.1s 
+ => => transferring context: 2B                                                                                                                     0.0s
+ => [myapp internal] load metadata for docker.io/library/nginx:latest                                                                               0.0s 
+ => [myapp internal] load build context                                                                                                             0.0s 
+ => => transferring context: 623B                                                                                                                   0.0s 
+ => [myapp] exporting to image                                                                                                                      0.1s 
+ => => exporting layers                                                                                                                             0.0s 
+ => => writing image sha256:be3655454a8b7b6bc090ff4faacce51ab48b6181d3547bc57aceb622bb32f3b5                                                        0.0s 
+ => => naming to docker.io/library/docker_labs-myapp                                                                                                0.0s 
+[+] Running 3/3
+ ✔ Network docker_labs_default  Created                                                                                                             0.8s 
+ ✔ Container mysql              Started                                                                                                             0.3s 
+ ✔ Container myapp              Started                                                                                                             0.3s
+
+10) check the containers 
+
+$ docker compose ps 
+
+NAME      IMAGE               COMMAND                                          SERVICE   CREATED         STATUS         PORTS
+myapp     docker_labs-myapp   "/docker-entrypoint.sh nginx -g 'daemon off;'"   myapp     8 minutes ago   Up 8 minutes   0.0.0.0:8080->80/tcp
+mysql     mysql:8             "docker-entrypoint.sh mysqld"                    mysql     8 minutes ago   Up 8 minutes   33060/tcp, 0.0.0.0:3307->3306/tcp
+
+$ docker compose down
+
+[+] Running 3/3
+ ✔ Container mysql              Removed                                                                                                             2.3s 
+ ✔ Container myapp              Removed                                                                                                             0.7s 
+ ✔ Network docker_labs_default  Removed                                                                                                             0.6s 
+
